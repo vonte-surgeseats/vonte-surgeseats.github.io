@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surge Seats — Best Ticket Prices. Every Event. Every Platform.</title>
+  <meta name="description" content="Surge Seats compares ticket prices across Ticketmaster, StubHub, SeatGeek, TickPick, Vivid Seats, and Gametime so you never overpay again. Coming soon." />
+  <meta property="og:title" content="Surge Seats — Best Ticket Prices. Every Event. Every Platform." />
+  <meta property="og:description" content="The smartest way to buy tickets. Coming soon to iOS and Android." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080810;
+      --surface: #11111f;
+      --surface2: #181828;
+      --border: rgba(255,255,255,0.06);
+      --orange: #FF6B35;
+      --orange-dim: rgba(255,107,53,0.15);
+      --orange-glow: rgba(255,107,53,0.3);
+      --text: #ffffff;
+      --text-secondary: #a0a0b8;
+      --text-muted: #505068;
+      --success: #00C48C;
+      --danger: #FF4757;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      animation: drift 20s ease-in-out infinite alternate;
+    }
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(255,107,53,0.12), transparent 70%);
+      top: -200px; left: -200px;
+      animation-duration: 25s;
+    }
+    .orb-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(26,26,46,0.8), transparent 70%);
+      bottom: -100px; right: -100px;
+      animation-duration: 30s;
+      animation-delay: -10s;
+    }
+    .orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,196,140,0.06), transparent 70%);
+      top: 50%; left: 60%;
+      animation-duration: 20s;
+      animation-delay: -5s;
+    }
+
+    @keyframes drift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(60px, 40px) scale(1.1); }
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(8,8,16,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo img {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .nav-logo-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      letter-spacing: 1px;
+      color: var(--text);
+    }
+
+    .nav-cta {
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: #ff8555;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(255,107,53,0.3);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+    }
+
+    .hero-logo {
+      width: 120px;
+      height: 120px;
+      border-radius: 28px;
+      object-fit: cover;
+      margin-bottom: 32px;
+      box-shadow: 0 24px 64px rgba(255,107,53,0.3);
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--orange-dim);
+      border: 1px solid rgba(255,107,53,0.3);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--orange);
+      margin-bottom: 24px;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      background: var(--orange);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(56px, 10vw, 120px);
+      line-height: 0.92;
+      letter-spacing: 2px;
+      color: var(--text);
+      margin-bottom: 8px;
+      animation: fadeUp 0.8s ease 0.15s both;
+    }
+
+    .hero-title-accent { color: var(--orange); }
+
+    .hero-tagline {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: var(--text-secondary);
+      font-weight: 300;
+      margin-top: 20px;
+      margin-bottom: 40px;
+      max-width: 560px;
+      line-height: 1.6;
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
+
+    .hero-tagline strong { color: var(--text); font-weight: 700; }
+
+    /* ── Email form ── */
+    .email-form {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      max-width: 480px;
+      animation: fadeUp 0.8s ease 0.3s both;
+    }
+
+    .email-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 20px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .email-input::placeholder { color: var(--text-muted); }
+    .email-input:focus { border-color: var(--orange); }
+
+    .email-btn {
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 24px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .email-btn:hover {
+      background: #ff8555;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255,107,53,0.3);
+    }
+
+    .form-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      animation: fadeUp 0.8s ease 0.4s both;
+    }
+
+    .success-msg {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,196,140,0.1);
+      border: 1px solid rgba(0,196,140,0.3);
+      border-radius: 12px;
+      padding: 14px 20px;
+      color: var(--success);
+      font-weight: 500;
+      font-size: 15px;
+      margin-top: 12px;
+    }
+
+    .social-proof {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 40px;
+      animation: fadeUp 0.8s ease 0.5s both;
+    }
+
+    .social-icons { display: flex; gap: 8px; }
+
+    .social-icon {
+      width: 40px; height: 40px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .social-icon:hover {
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+
+    .social-text { font-size: 13px; color: var(--text-muted); }
+
+    /* ── Platforms ── */
+    .platforms {
+      padding: 60px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .platforms-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .platforms-track {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 0 24px;
+    }
+
+    .platform-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .platform-chip:hover {
+      border-color: rgba(255,255,255,0.15);
+      color: var(--text);
+      transform: translateY(-2px);
+    }
+
+    .platform-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* ── Features ── */
+    .features { padding: 80px 0; position: relative; z-index: 1; }
+
+    .section-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 1;
+      text-align: center;
+      margin-bottom: 60px;
+      letter-spacing: 1px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, var(--orange-dim), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(255,107,53,0.2);
+      transform: translateY(-4px);
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+    .feature-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .feature-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── How it works ── */
+    .how { padding: 80px 0; position: relative; z-index: 1; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0;
+      position: relative;
+      margin-top: 60px;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 32px;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .step-number {
+      width: 64px; height: 64px;
+      background: var(--surface);
+      border: 2px solid var(--orange);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--orange);
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 24px var(--orange-glow);
+    }
+
+    .step-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .step-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── CTA ── */
+    .cta-section { padding: 80px 0 120px; position: relative; z-index: 1; }
+
+    .cta-card {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+      border: 1px solid rgba(255,107,53,0.2);
+      border-radius: 28px;
+      padding: 64px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(255,107,53,0.08), transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-logo {
+      width: 80px; height: 80px;
+      border-radius: 20px;
+      object-fit: cover;
+      margin: 0 auto 24px;
+      display: block;
+      box-shadow: 0 16px 40px rgba(255,107,53,0.25);
+    }
+
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(40px, 6vw, 80px);
+      line-height: 1;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+
+    .cta-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-logo img {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+
+    .footer-logo-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+    }
+
+    .footer-links { display: flex; gap: 24px; }
+
+    .footer-link {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover { color: var(--orange); }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-muted);
+      width: 100%;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .email-form { flex-direction: column; }
+      .steps::before { display: none; }
+      .cta-card { padding: 40px 24px; }
+      .footer-links { display: none; }
+      .hero { padding-top: 100px; }
+      .hero-logo { width: 90px; height: 90px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Nav -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <img src="surgeseatslogo.png" alt="Surge Seats Logo" />
+      <span class="nav-logo-text">Surge Seats</span>
+    </a>
+    <a href="#notify" class="nav-cta">Get Early Access</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrapper" style="display:flex;flex-direction:column;align-items:center;">
+
+      <img src="surgeseatslogo.png" alt="Surge Seats" class="hero-logo" />
+
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Coming Soon to iOS & Android
+      </div>
+
+      <h1 class="hero-title">
+        Surge <span class="hero-title-accent">Seats</span>
+      </h1>
+
+      <p class="hero-tagline">
+        <strong>Best ticket prices. Every event. Every platform.</strong><br/>
+        We compare Ticketmaster, StubHub, SeatGeek, TickPick, Vivid Seats & Gametime — so you never overpay again.
+      </p>
+
+      <div class="email-form" id="notify">
+        <input type="email" class="email-input" placeholder="your@email.com" id="emailInput" />
+        <button class="email-btn" onclick="handleSubmit()">Notify Me</button>
+      </div>
+      <p class="form-note">🔒 No spam. Just your launch notification.</p>
+      <div id="successMsg" class="success-msg">
+        ✅ You're on the list! We'll notify you at launch.
+      </div>
+
+      <div class="social-proof">
+        <div class="social-icons">
+          <a href="https://instagram.com/surgeseats" target="_blank" class="social-icon">📸</a>
+          <a href="mailto:hello@surgeseats.com" class="social-icon">✉️</a>
+        </div>
+        <span class="social-text">Follow us for updates @surgeseats</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platforms -->
+  <section class="platforms">
+    <p class="platforms-label">Comparing prices across</p>
+    <div class="platforms-track">
+      <div class="platform-chip"><div class="platform-dot" style="background:#026CDF"></div>Ticketmaster</div>
+      <div class="platform-chip"><div class="platform-dot" style="background:#CC0000"></div>StubHub</div>
+      <div class="platform-chip"><div class="platform-dot" style="background:#00A14B"></div>SeatGeek</div>
+      <div class="platform-chip"><div class="platform-dot" style="background:#FF6600"></div>TickPick</div>
+      <div class="platform-chip"><div class="platform-dot" style="background:#6600CC"></div>Vivid Seats</div>
+      <div class="platform-chip"><div class="platform-dot" style="background:#00C48C"></div>Gametime</div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="wrapper">
+      <p class="section-label fade-up">Why Surge Seats</p>
+      <h2 class="section-title fade-up">Stop Overpaying.<br/>Start Surging.</h2>
+      <div class="features-grid">
+        <div class="feature-card fade-up">
+          <span class="feature-icon">💰</span>
+          <h3 class="feature-title">Real Price Comparison</h3>
+          <p class="feature-desc">See all-in prices including every fee from every major platform side by side. No more tab switching, no more surprises at checkout.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <span class="feature-icon">🤖</span>
+          <h3 class="feature-title">AI Price Prediction</h3>
+          <p class="feature-desc">Our AI tells you whether to Buy Now, Wait, or Watch based on historical price trends. Know exactly when prices will drop.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <span class="feature-icon">🔔</span>
+          <h3 class="feature-title">Price Drop Alerts</h3>
+          <p class="feature-desc">Set your target price and we'll notify you the moment any platform hits it. Never miss a deal on your favorite events.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <span class="feature-icon">🎟️</span>
+          <h3 class="feature-title">Every Event</h3>
+          <p class="feature-desc">Concerts, sports, comedy, theater, festivals — if there are tickets, we find the best price. Powered by the biggest platforms on earth.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <span class="feature-icon">⭐</span>
+          <h3 class="feature-title">Watchlist</h3>
+          <p class="feature-desc">Save events you're eyeing and track their prices over time. Your personal command center for every event on your radar.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <span class="feature-icon">🏆</span>
+          <h3 class="feature-title">Best Deal Score</h3>
+          <p class="feature-desc">Our algorithm scores every listing — price, fees, seat quality, and historical context — so the best deal is always obvious.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="how">
+    <div class="wrapper">
+      <p class="section-label fade-up">How It Works</p>
+      <h2 class="section-title fade-up">Three Steps.<br/>Best Price.</h2>
+      <div class="steps">
+        <div class="step fade-up">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Search Any Event</h3>
+          <p class="step-desc">Search by artist, team, venue, or browse by category. Find any event happening anywhere.</p>
+        </div>
+        <div class="step fade-up">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Compare All Prices</h3>
+          <p class="step-desc">See real-time all-in prices from every major platform side by side with full fee transparency.</p>
+        </div>
+        <div class="step fade-up">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Buy with Confidence</h3>
+          <p class="step-desc">Our AI tells you the best time to buy. One tap takes you to the platform to complete your purchase.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="wrapper">
+      <div class="cta-card fade-up">
+        <img src="surgeseatslogo.png" alt="Surge Seats" class="cta-logo" />
+        <h2 class="cta-title">Be First<br/><span style="color:var(--orange)">In Line</span></h2>
+        <p class="cta-subtitle">Join the waitlist. Get early access when we launch.</p>
+        <div class="email-form" style="max-width:480px;margin:0 auto;">
+          <input type="email" class="email-input" placeholder="your@email.com" id="emailInput2" />
+          <button class="email-btn" onclick="handleSubmit2()">Get Early Access</button>
+        </div>
+        <div id="successMsg2" class="success-msg" style="max-width:480px;margin:12px auto 0;">
+          ✅ You're on the list! We'll notify you at launch.
+        </div>
+        <p class="form-note" style="margin-top:12px;">🔒 No spam. Just your launch notification.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="surgeseatslogo.png" alt="Surge Seats" />
+        <span class="footer-logo-text">Surge Seats</span>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:hello@surgeseats.com" class="footer-link">Contact</a>
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link">Terms of Service</a>
+        <a href="https://instagram.com/surgeseats" target="_blank" class="footer-link">Instagram</a>
+      </div>
+      <p class="footer-copy">© 2026 Surge Seats LLC · Atlanta, GA · Built for fans. Not scalpers.</p>
+    </div>
+  </footer>
+
+  <script>
+    function handleSubmit() {
+      const email = document.getElementById('emailInput').value
+      if (!email || !email.includes('@')) {
+        document.getElementById('emailInput').style.borderColor = '#FF4757'
+        return
+      }
+      document.getElementById('emailInput').style.borderColor = '#00C48C'
+      document.getElementById('successMsg').style.display = 'flex'
+      document.getElementById('emailInput').value = ''
+    }
+
+    function handleSubmit2() {
+      const email = document.getElementById('emailInput2').value
+      if (!email || !email.includes('@')) {
+        document.getElementById('emailInput2').style.borderColor = '#FF4757'
+        return
+      }
+      document.getElementById('emailInput2').style.borderColor = '#00C48C'
+      document.getElementById('successMsg2').style.display = 'flex'
+      document.getElementById('emailInput2').value = ''
+    }
+
+    document.getElementById('emailInput').addEventListener('keypress', e => { if (e.key === 'Enter') handleSubmit() })
+    document.getElementById('emailInput2').addEventListener('keypress', e => { if (e.key === 'Enter') handleSubmit2() })
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible')
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.1 })
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el))
+  </script>
+</body>
+</html>
